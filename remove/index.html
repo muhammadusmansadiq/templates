@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Remove Background Image{% endblock title %}
+
+{% block content %}
+{% if index %}
+
+  
+{% include "remove/form.html" %}
+
+
+{% endif %}
+
+{% if edit %}
+<div id="bef">
+
+
+  
+{% include "remove/advance_form.html" %}
+</div>
+
+{% endif %}
+
+{% endblock content %}
+

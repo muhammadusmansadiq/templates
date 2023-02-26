@@ -1,0 +1,1094 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Remove Background</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+		integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+	<link rel="stylesheet" href="{% static 'assets/editor/css/style.css'%} ">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
+	<!-- <link rel="stylesheet" href="{% static 'assets/editor/css/bootstrap.min.css'%} ">
+    <link rel="stylesheet" href="{% static 'assets/editor/css/stylesheet.css'%} ">
+    <link rel="stylesheet" href="{% static 'assets/editor/css/editor.css'%} "> -->
+	<!-- <script>
+		localStorage.clear();
+	</script> -->
+	<style>
+		.tab-icon {
+			margin-right: 0.5em;
+		}
+	</style>
+	<script>
+		localStorage.clear();
+	</script>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		html,
+		body {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			overflow: hidden;
+
+		}
+
+		.containers {
+			display: flex;
+			height: 100%;
+			margin: 10px;
+		}
+
+		.column1 {
+			flex: 1 0 80%;
+			background-color: #fdfbfb;
+			height: 100%;
+			padding: 10px;
+		}
+
+		.column2 {
+			flex: 1 0 20%;
+			background-color: #fff9f9;
+			height: 100%;
+			padding: 10px;
+		}
+
+		@media only screen and (max-width: 767px) {
+			.containers {
+				flex-direction: column;
+			}
+
+			.column1 {
+				flex: none;
+				height: 80vh;
+				padding: 10px;
+			}
+
+			.column2 {
+				flex: none;
+				height: 20vh;
+				padding: 10px;
+				overflow-y: scroll;
+			}
+		}
+
+
+
+		.toggle-div {
+			display: none;
+		}
+
+		.toggle-div.active {
+			display: block;
+		}
+
+		.button-row {
+			padding: 10px;
+		}
+
+		.scrollable {
+			display: flex;
+			overflow-x: auto;
+			justify-content: center;
+			width: 100%;
+		}
+
+
+
+		/* @media (max-width: 576px) {
+  .btn {
+    flex-basis: calc((100% - 30px) / 2);
+    max-width: 120px;
+    font-size: 12px;
+
+  }}
+
+  /* Reduce padding around buttons on mobile devices */
+		@media (max-width: 767px) {
+			.t-btn {
+				padding: 0.2rem 0.1rem;
+				font-size: 1.8rem;
+			}
+		}
+
+		*/ .t-btn-group.center {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+
+		.t-btn {
+			background-color: #fff;
+			color: #000;
+			border: none;
+			border-radius: 5px;
+			padding: 10px 20px;
+			font-size: 16px;
+			cursor: pointer;
+			box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+			transition: all 0.3s ease-in-out;
+		}
+
+		.t-btn:hover {
+			background-color: #000;
+			color: #fff;
+		}
+
+		.t-btn:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+
+		input[type=range] {
+			width: 100%;
+			-webkit-appearance: none;
+			background-color: #d3d3d3;
+			height: 10px;
+			border-radius: 5px;
+			margin-top: 10px;
+		}
+
+		input[type=range]::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			appearance: none;
+			width: 20px;
+			height: 20px;
+			background-color: #000;
+			border-radius: 50%;
+			cursor: pointer;
+		}
+
+		input[type=range]:focus {
+			outline: none;
+		}
+
+		input[type=range]:focus::-webkit-slider-thumb {
+			box-shadow: 0px 0px 0px 4px #999;
+		}
+
+		@media (max-width: 767px) {
+			.t-btn {
+				font-size: 20px;
+				padding: 8px 20px;
+			}
+		}
+
+
+		.btn-group {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		.btn-r {
+			padding: 8px;
+			border: none;
+			border-radius: 4px;
+			background-color: #f5f5f5;
+			color: #333;
+			font-size: 18px;
+			margin-right: 2px;
+			transition: all 0.2s ease;
+		}
+
+		.btn-r:hover:not(.disabled) {
+			background-color: #ddd;
+			color: #333;
+			cursor: pointer;
+		}
+
+		.disabled {
+			opacity: 0.5;
+			cursor: default;
+		}
+
+		.range-r {
+			margin-top: 14px;
+			width: 200px;
+		}
+
+		/* Default style for desktop */
+		.erow {
+			display: flex;
+			justify-content: center;
+		}
+
+		/* Style for mobile devices
+@media only screen and (max-width: 768px) {
+  .erow {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .erow .btn-group {
+    margin: 5px 0;
+  }
+} */
+		@media only screen and (max-width: 767px) {
+
+			/* CSS rules for small screens */
+			#canvas-row {
+				height: 60vh;
+			}
+
+			#leftCanvas,
+			#rightCanvas,
+			#resultCanvas {
+				height: 60vh;
+			}
+
+			#opt-row {
+				height: 30vh;
+				width: 100%;
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				overflow-y: scroll;
+				/* Add vertical scrollbar */
+			}
+
+			/* Keep scrollbar always visible */
+			#opt-row::-webkit-scrollbar {
+				width: 0.5rem;
+				background-color: rgba(0, 0, 0, 0);
+			}
+
+			#opt-row::-webkit-scrollbar-thumb {
+				background-color: rgba(0, 0, 0, 0.2);
+				border-radius: 0.25rem;
+			}
+		}
+
+		@media (max-width: 576px) {
+			.effect-buttons button {
+				margin-bottom: 0.5rem;
+			}
+		}
+
+		@media (max-width: 576px) {
+			.effect-buttons button {
+				font-size: 0.8rem;
+			}
+		}
+
+		.modern-button {
+			background-color: #f5f5f5;
+			border: none;
+			color: #333;
+			font-size: 16px;
+			margin: 5px;
+			padding: 10px 20px;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Preloader -->
+	<div id="preloader">
+		<div class="loader"></div>
+	</div>
+
+
+
+	<div class="containers">
+		<div style="display: none;">
+			<img src="" alt="" id="myImage" width="500px" height="auto">
+
+		</div>
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="col-md-12 p-2 col-sm-12">
+					<div class="button-row">
+						<div class="d-flex flex-wrap justify-content-center">
+
+							<div class=" d-flex flex-row">
+								<button class="btn t-btn toggle-btn active" data-target="#eraser-div" data-act="setType"
+									data-arg="erase" onclick="showEditRow()">
+									<i class="fas fa-eraser"></i><span class="d-none d-md-inline"> Eraser</span>
+								</button>
+								<button class="btn t-btn toggle-btn" data-target="#eraser-div" data-act="setType"
+									data-arg="foreground" onclick="showEditRow()">
+									<i class="fas fa-undo"></i><span class="d-none d-md-inline"> Restore</span>
+								</button>
+								<button class="btn t-btn toggle-btn" data-target="#image-div" data-act="downloadLowRes"
+									onclick="showEditorRow()">
+									<i class="fas fa-image"></i><span class="d-none d-md-inline"> Image</span>
+								</button>
+								<button class="btn t-btn toggle-btn" data-target="#text-div" data-act="downloadLowRes"
+									onclick="showEditorRow()">
+									<i class="fas fa-font"></i><span class="d-none d-md-inline"> Text</span>
+								</button>
+								<button class="  t-btn toggle-btn" data-target="#shadow-div" data-act="downloadLowRes"
+									onclick="showEditorRow()">
+									<i class="fas fa-lightbulb"></i><span class="d-none d-md-inline"> Shadow</span>
+								</button>
+								<button class="btn t-btn toggle-btn" data-target="#download-div"
+									data-act="downloadLowRes" onclick="showEditorRow()">
+									<i class="fas fa-download"></i><span class="d-none d-md-inline"> Download</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-10 p-2 col-sm-12">
+
+
+
+					<div>
+						<!-- eraser restore  -->
+						<div class="erow" id="edit-row3" style="display: none;">
+							<div class="d-flex flex-wrap justify-content-center">
+								<div class="btn-group center mr-2">
+									<button class="btn-r undoBtn" data-act="undo" title="Undo"><i
+											class="fas fa-undo"></i></button>
+									<button class="btn-r disabled redoBtn" data-act="redo" title="Redo"><i
+											class="fas fa-redo"></i></button>
+								</div>
+								<div class="btn-group center mr-2">
+									<button class="btn-r zoomInBtn" data-act="zoomIn" title="Zoom In"><i
+											class="fas fa-search-plus"></i></button>
+									<button class="btn-r zoomOutBtn" data-act="zoomOut" title="Zoom Out"><i
+											class="fas fa-search-minus"></i></button>
+									<button class="btn-r zoomToOrigBtn" data-act="zoomToOrig" title="Original Size"><i
+											class="fas fa-compress"></i></button>
+									<!-- <button class="btn-r zoomToFitBtn" data-act="zoomToFit" title="Zoom To Fit"><i
+                                            class="fas fa-arrows-alt"></i></button> -->
+								</div>
+								<div class="btn-group center mr-2">
+									<!-- <button class="btn-r clearBtn" data-act="clear" title="Clear Selections"><i
+                                            class="fas fa-eraser"></i></button> -->
+									<button class="btn-r setTypeBtn" data-act="setType" data-arg="move" title="Move"><i
+											class="fas fa-arrows-alt"></i></button>
+								</div>
+								<div class="btn-group center">
+									<input type="range" min="1" max="100" value="30"
+										class="range-r zoomSlider d-none d-md-block" id="markerSize"
+										title="Marker Size">
+								</div>
+							</div>
+						</div>
+
+
+
+
+						<!-- erase restore canvas  -->
+						<div class="erow" id="edit-row4" style="display: none;">
+							<div class="col-12 row" id="canvas-row"
+								style="background-color: white; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAABwCAIAAABD8g8LAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAATQSURBVHhe7dexDUJBDAVB+i+SVj7JIGGt6cCTXLCXvciv9/T8IYcccsghhxxyyCGHHHLIIYcccsjTjbSTQw455JBDnl7eL39DDjnkkEMOOeSQQw455JBDDjnkkKcbaSeHHHLIIYc83Ug7OeSQQw455OlG2skhhxxyyCFPN9JODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0x+xODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0I+3kkEMOOeSQpxtpJ4cccsghhzzdSDs55JBDDjnk6UbaySGHHHLIIU93zO7kkEMOOeSQpxtpJ4cccsghhzzdSDs55JBDDjnk6UbaySGHHHLIIU830k4OOeSQQw55upF2csghhxxyyNONtJNDDjnkkEOebqSdHHLIIYcc8nTH7E4OOeSQQw55upF2csghhxxyyNONtJNDDjnkkEOebqSdHHLIIYcc8nQj7eSQQw455JCnG2knhxxyyCGHPN1IOznkkEMOOeTpRtrJIYcccsghT3fM7uSQQw455JCnG2knhxxyyCGHPN1IOznkkEMOOeTpRtrJIYcccsghTzfSTg455JBDDnm6kXZyyCGHHHLI0420k0MOOeSQQ55upJ0ccsghhxzydMfsTg455JBDDnm6kXZyyCGHHHLI0420k0MOOeSQQ55upJ0ccsghhxzydCPt5JBDDjnkkKcbaSeHHHLIIYc83Ug7OeSQQw455OlG2skhhxxyyCFPd8zu5JBDDjnkkKcbaSeHHHLIIYc83Ug7OeSQQw455OlG2skhhxxyyCFPN9JODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0x+xODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0I+3kkEMOOeSQpxtpJ4cccsghhzzdSDs55JBDDjnk6UbaySGHHHLIIU93zO7kkEMOOeSQpxtpJ4cccsghhzzdSDs55JBDDjnk6UbaySGHHHLIIU830k4OOeSQQw55upF2csghhxxyyNONtJNDDjnkkEOebqSdHHLIIYcc8nTH7E4OOeSQQw55upF2csghhxxyyNONtJNDDjnkkEOebqSdHHLIIYcc8nQj7eSQQw455JCnG2knhxxyyCGHPN1IOznkkEMOOeTpRtrJIYcccsghT3fM7uSQQw455JCnG2knhxxyyCGHPN1IOznkkEMOOeTpRtrJIYcccsghTzfSTg455JBDDnm6kXZyyCGHHHLI0420k0MOOeSQQ55upJ0ccsghhxzydMfsTg455JBDDnm6kXZyyCGHHHLI0420k0MOOeSQQ55upJ0ccsghhxzydCPt5JBDDjnkkKcbaSeHHHLIIYc83Ug7OeSQQw455OlG2skhhxxyyCFPd8zu5JBDDjnkkKcbaSeHHHLIIYc83Ug7OeSQQw455OlG2skhhxxyyCFPN9JODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0x+xODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0I+3kkEMOOeSQpxtpJ4cccsghh/zreT47YzpmVbrv8wAAAABJRU5ErkJggg=='); background-position: center center;">
+								<div class="col-sm-6" id="leftSide" style="border-right: 1px solid black;">
+									<canvas id="leftCanvas"
+										style="width: 100%; cursor: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAW9JREFUSEvFly1Tw0AQhp+VYLFg0VgsWLBoLA4GBxo0roNrLZbaIMGCpLb8hlaGefMxaY6EuTSX3M7E3e6ze7fZD8NXUo6AQ2Af2AUOCtUlsAJ+gG+MLx+T9u+hNAOcAKcFzMemnEiANyxzqFHawSnHwEUHoAsQdIbx2URuBqcZUFGGkATjxTX0F5xyCVm0IeUdY7ZpsA4OG6nreC3yCpy/qaIdUiblm+fgPHsfeiSSr7NKuHtlewk+B858tXuem2O8luAnYKenQV/1FcaNkVekK1+tQOcmAof8Z339SgS+LWqwr1KIcwuBH4G9ENY62FgK/NxBIdjRqOBoVx0tuaL9TpEKSN4kxiyZa4zr6E1CbVHZPXSjWAN3VVvMr3uMt3YGgbIeDdswsj5cosYa9j4wpu3D3jCR1yJtj7iC6801/G2bcEqkabeBvoIr2zXY6/N1QECtMBpnt1hh3AZYLW1a1uTE5tImmJa3RVuErrlfChtgMUeQA88AAAAASUVORK5CYII=&quot;) 15 15, auto;">
+										Your browser does not support the HTML 5 Canvas.
+									</canvas>
+									<span class=" d-none d-md-block" style="border-right: 1px solid black;"></span>
+
+								</div>
+
+								<div class="col-sm-6" id="rightSide">
+									<canvas id="rightCanvas" style="width: 100%; cursor: move;">
+										Your browser does not support the HTML 5 Canvas.
+									</canvas>
+								</div>
+							</div>
+
+						</div>
+
+						<!-- editor row buttons  -->
+						<div class="erow " id="editor-row1">
+							<div class="d-flex flex-wrap justify-content-center">
+
+								<div class="btn-group">
+									<button class="btn-r undoBtn" id="undo" title="Undo"><i
+											class="fas fa-undo"></i></button>
+									<button class="btn-r redoBtn" id="redo" title="Redo"><i
+											class="fas fa-redo"></i></button>
+								</div>
+
+								<div class="btn-group">
+									<button class="btn-r zoomInBtn" id="zoomInBtn" title="Zoom In"><i
+											class=" fas fa-search-plus"></i></button>
+									<button class="btn-r zoomOutBtn" id="zoomOutBtn" title="Zoom Out"><i
+											class="fas fa-search-minus"></i></button>
+
+									<button class="btn-r zoomToFitBtn" id="fitToScreenBtn" title="Fit To Screen"><i
+											class="fas fa-compress"></i></button>
+								</div>
+							</div>
+						</div>
+
+						<div class="erow" id="editor-row2">
+							<div id="canvas-div"
+								class="col-md-12 order-md-1 order-1 d-flex justify-content-center align-items-center"
+								style="background-color: white;">
+								<div class="canvas-container " style="background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAABwCAIAAABD8g8LAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAATQSURBVHhe7dexDUJBDAVB+i+SVj7JIGGt6cCTXLCXvciv9/T8IYcccsghhxxyyCGHHHLIIYcccsjTjbSTQw455JBDnl7eL39DDjnkkEMOOeSQQw455JBDDjnkkKcbaSeHHHLIIYc83Ug7OeSQQw455OlG2skhhxxyyCFPN9JODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0x+xODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0I+3kkEMOOeSQpxtpJ4cccsghhzzdSDs55JBDDjnk6UbaySGHHHLIIU93zO7kkEMOOeSQpxtpJ4cccsghhzzdSDs55JBDDjnk6UbaySGHHHLIIU830k4OOeSQQw55upF2csghhxxyyNONtJNDDjnkkEOebqSdHHLIIYcc8nTH7E4OOeSQQw55upF2csghhxxyyNONtJNDDjnkkEOebqSdHHLIIYcc8nQj7eSQQw455JCnG2knhxxyyCGHPN1IOznkkEMOOeTpRtrJIYcccsghT3fM7uSQQw455JCnG2knhxxyyCGHPN1IOznkkEMOOeTpRtrJIYcccsghTzfSTg455JBDDnm6kXZyyCGHHHLI0420k0MOOeSQQ55upJ0ccsghhxzydMfsTg455JBDDnm6kXZyyCGHHHLI0420k0MOOeSQQ55upJ0ccsghhxzydCPt5JBDDjnkkKcbaSeHHHLIIYc83Ug7OeSQQw455OlG2skhhxxyyCFPd8zu5JBDDjnkkKcbaSeHHHLIIYc83Ug7OeSQQw455OlG2skhhxxyyCFPN9JODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0x+xODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0I+3kkEMOOeSQpxtpJ4cccsghhzzdSDs55JBDDjnk6UbaySGHHHLIIU93zO7kkEMOOeSQpxtpJ4cccsghhzzdSDs55JBDDjnk6UbaySGHHHLIIU830k4OOeSQQw55upF2csghhxxyyNONtJNDDjnkkEOebqSdHHLIIYcc8nTH7E4OOeSQQw55upF2csghhxxyyNONtJNDDjnkkEOebqSdHHLIIYcc8nQj7eSQQw455JCnG2knhxxyyCGHPN1IOznkkEMOOeTpRtrJIYcccsghT3fM7uSQQw455JCnG2knhxxyyCGHPN1IOznkkEMOOeTpRtrJIYcccsghTzfSTg455JBDDnm6kXZyyCGHHHLI0420k0MOOeSQQ55upJ0ccsghhxzydMfsTg455JBDDnm6kXZyyCGHHHLI0420k0MOOeSQQ55upJ0ccsghhxzydCPt5JBDDjnkkKcbaSeHHHLIIYc83Ug7OeSQQw455OlG2skhhxxyyCFPd8zu5JBDDjnkkKcbaSeHHHLIIYc83Ug7OeSQQw455OlG2skhhxxyyCFPN9JODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0x+xODjnkkEMOebqRdnLIIYcccsjTjbSTQw455JBDnm6knRxyyCGHHPJ0I+3kkEMOOeSQpxtpJ4cccsghh/zreT47YzpmVbrv8wAAAABJRU5ErkJggg==');"
+									id="resultCanvas">
+									<canvas id="canvas"></canvas>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+
+				</div>
+				<div class="column2 col-md-2 p-4" id="opt-row">
+					<div class="toggle-div active" id="eraser-div">
+						<h3 class="d-none d-sm-block">Eraser</h3>
+						<p class="d-none d-sm-block">This tool is used to erase parts of an image. Select the offset
+							boundary
+							and feathering radius to adjust the eraser's effect.</p>
+						<div>
+							<div class="d-block d-sm-none">
+								<button class="maskBtntoggle-btn-sm d-block float-right" data-act="showLeft"
+									title="Mask" id="maskRadioBtn">
+									<input type="radio" name="tool">
+									<span class="small"><b>Mask</b></span>
+								</button>
+								<button class="resultBtn toggle-btn-sm d-block float-right" data-act="showRight"
+									title="Result" id="resultRadioBtn">
+									<input type="radio" name="tool">
+									<span class="small"><b>Result</b></span>
+								</button>
+								<div class="form-group mt-3">
+									<label for="markerSize" class="form-label">Marker Size</label>
+									<input type="range" min="1" max="100" value="30" class="zoomSlider form-range"
+										id="markerSize" title="Marker Size">
+								</div>
+							</div>
+							<div class="form-group d-flex flex-wrap justify-content-between align-items-center">
+								<label for="offsetBoundary" class="form-label me-3">Offset the Boundary</label>
+								<select class="form-select" id="offsetBoundary" data-layer="mask"
+									data-property="offset">
+									<option value="-2">-2</option>
+									<option value="-1">-1</option>
+									<option value="0" selected="selected">0</option>
+									<option value="1">1</option>
+									<option value="2">2</option>
+								</select>
+								<label for="featheringRadius" class="form-label ms-3 me-3">Feathering</label>
+								<select class="form-select" id="featheringRadius" data-layer="mask"
+									data-property="feathering">
+									<option value="0">0</option>
+									<option value="1">1</option>
+								</select>
+								<button data-act="clear" type="button" data-arg="" nohref="1" class="btn-reset"
+									title="Reset Foreground">
+									<i class="fas fa-undo-alt"></i>
+									Reset to Defaults
+								</button>
+							</div>
+						</div>
+					</div>
+
+
+
+
+					<div class="toggle-div" id="image-div">
+						<h3 class="d-none d-sm-block">Image</h3>
+						<p class="d-none d-sm-block">Image content goes here...</p>
+
+						<ul class="nav nav-tabs">
+							<li class="nav-item">
+								<a class="nav-link active" data-toggle="tab" href="#transform">
+									<i class="fas fa-sync-alt mr-2 tab-icon"></i>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#effects">
+									<i class="fas fa-magic tab-icon"></i>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#background-style">
+									<i class="fas fa-palette tab-icon"></i>
+								</a>
+							</li>
+						</ul>
+
+						<div class="tab-content">
+							<div id="transform" class="tab-pane active">
+								<!-- Rotate, Crop, and Flip buttons stacked for mobile -->
+								<div class="d-md-none">
+									<div class="row mb-3">
+										<div class="col-4 text-center">
+											<button id="rotateRightBtn" class="btn btn-outline-primary btn-block">
+												<i class="fas fa-undo"></i>
+											</button>
+										</div>
+										<div class="col-4 text-center">
+											<button id="startCrop" class="btn btn-outline-primary btn-block">
+												<i class="fas fa-crop"></i>
+											</button>
+										</div>
+										<div class="col-4 text-center">
+											<button id="flipVBtn" class="btn btn-outline-primary btn-block">
+												<i class="fas fa-arrows-alt-v"></i>
+											</button>
+										</div>
+										<div class="col-4 text-center">
+											<button id="rotateLeftBtn" class="btn btn-outline-primary btn-block">
+												<i class="fas fa-redo"></i>
+											</button>
+										</div>
+										<div class="col-4 text-center">
+											<button id="crop" class="btn btn-outline-primary btn-block disabled">
+												<i class="fas fa-check"></i>
+											</button>
+										</div>
+										<div class="col-4 text-center">
+											<button id="flipHBtn" class="btn btn-outline-primary btn-block">
+												<i class="fas fa-arrows-alt-h"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+
+								<!-- Rotate, Crop, and Flip buttons in a single row for desktop -->
+								<div class="d-none d-md-block">
+									<div class="row mb-3">
+										<div class="col-4 text-center">
+											<button id="rotateRightBtn" class="btn btn-outline-primary btn-block">
+												<i class="fas fa-undo"></i>
+											</button>
+											<p>Rotate Right</p>
+										</div>
+										<div class="col-4 text-center">
+											<button id="startCrop" class="btn btn-outline-primary btn-block">
+												<i class="fas fa-crop"></i>
+											</button>
+											<p>Crop</p>
+										</div>
+										<div class="col-4 text-center">
+											<button id="flipVBtn" class="btn btn-outline-primary btn-block">
+												<i class="fas fa-arrows-alt-v"></i>
+											</button>
+											<p>Flip Vertical</p>
+										</div>
+										<div class="col-4 text-center">
+											<button id="rotateLeftBtn" class="btn btn-outline-primary btn-block">
+												<i class="fas fa-redo"></i>
+											</button>
+											<p>Rotate Left</p>
+										</div>
+										<div class="col-4 text-center">
+											<button id="crop" class="btn btn-outline-primary btn-block disabled">
+												<i class="fas fa-check"></i>
+											</button>
+											<p>Done</p>
+										</div>
+										<div class="col-4 text-center">
+											<button id="flipHBtn" class="btn btn-outline-primary btn-block">
+												<i class="fas fa-arrows-alt-h"></i>
+											</button>
+											<p>Flip Horizontal</p>
+										</div>
+									</div>
+								</div>
+
+
+
+								<!-- Adjustment sliders in a single row -->
+								<div class="row mb-3">
+									<div class="col-6 text-center">
+										<label for="brightness-slider"><i class="fas fa-sun"></i></label>
+										<input type="range" min="-1" max="1" step="0.1" id="brightness-slider"
+											class="form-range">
+									</div>
+									<div class="col-6 text-center">
+										<label for="contrast-slider"><i class="fas fa-adjust"></i></label>
+										<input type="range" min="-1" max="1" step="0.1" id="contrast-slider"
+											class="form-range">
+									</div>
+								</div>
+							</div>
+
+
+							<div id="effects" class="tab-pane">
+								<h3 class="d-none d-sm-block">Effects</h3>
+								<p class="d-none d-sm-block">Apply various effects to your image.</p>
+								<div class="effect-buttons">
+									<button id="grayscale-button" class="modern-button" title="Grayscale">
+										<i class="fas fa-grayscale"></i>
+									</button>
+									<button id="sepia-button" class="modern-button" title="Sepia">
+										<i class="fas fa-fill-drip"></i>
+									</button>
+									<button id="invert-button" class="modern-button" title="Invert">
+										<i class="fas fa-adjust"></i>
+									</button>
+									<button id="blur-button" class="modern-button" title="Blur">
+										<i class="fas fa-circle"></i>
+									</button>
+									<button id="hue-rotation-button" class="modern-button" title="Hue Rotation">
+										<i class="fas fa-sync-alt"></i>
+									</button>
+									<button id="pixelate-button" class="modern-button" title="Pixelate">
+										<i class="fas fa-th"></i>
+									</button>
+									<button id="saturation-button" class="modern-button" title="Saturation">
+										<i class="fas fa-adjust"></i>
+									</button>
+									<button id="vintage-button" class="modern-button" title="Vintage">
+										<i class="fas fa-image"></i>
+									</button>
+									<button id="emboss-button" class="modern-button" title="Emboss">
+										<i class="fas fa-bullseye"></i>
+									</button>
+									<button id="noise-button" class="modern-button" title="Noise">
+										<i class="fas fa-circle"></i>
+									</button>
+									<button id="color-correction-button" class="modern-button" title="Color Correction">
+										<i class="fas fa-palette"></i>
+									</button>
+								</div>
+								<form>
+									<div class="form-group">
+										<label for="blend-color-input">Blend color:</label>
+										<input type="color" id="blend-color-input" value="#F7D1E5">
+									</div>
+									<div class="form-group">
+										<label for="opacity-input">Opacity:</label>
+										<input type="range" id="opacity-input" min="0" max="1" step="0.05" value="0.2">
+									</div>
+								</form>
+								<div class="effect-buttons">
+									<button id="pastel-button" class="modern-button" title="Pastel">
+										<i class="fas fa-circle"></i>
+									</button>
+								</div>
+							</div>
+
+
+
+							<div id="background-style" class="tab-pane">
+								<h3>Background Style Content</h3>
+								<div class="background-options">
+									<h3>Colors background</h3>
+									<div class="color-btns">
+										<button class="color-picker-btn-icon"
+											onclick="document.getElementById('bgColorPicker').click()">
+											<i class="fa fa-paint-brush"></i>
+										</button>
+										<div class="invisible">
+											<input type="color" id="bgColorPicker" value="#ffffff"
+												onchange="setBgColor(this.value)">
+											<i class="fa fa-caret-down color-picker-icon"
+												onclick="document.getElementById('bgColorPicker').click()"></i>
+										</div>
+										<button class="color-btn "
+											style="background-color: #ffffff;  margin: 5px; padding: 10px;"
+											onclick="setBgColor('#ffffff')" title="White"></button>
+										<button class="color-btn"
+											style="background-color: #000000;  margin: 5px; padding: 10px;"
+											onclick="setBgColor('#000000')" title="Black"></button>
+										<button class="color-btn"
+											style="background-color: #F44336;  margin: 5px; padding: 10px;"
+											onclick="setBgColor('#F44336')" title="Red"></button>
+										<button class="color-btn"
+											style="background-color: #3F51B5;  margin: 5px; padding: 10px;"
+											onclick="setBgColor('#3F51B5')" title="Indigo"></button>
+										<button class="color-btn"
+											style="background-color: #FFC107;  margin: 5px; padding: 10px;"
+											onclick="setBgColor('#FFC107')" title="Yellow"></button>
+										<button class="color-btn"
+											style="background-color: #4CAF50;  margin: 5px; padding: 10px;"
+											onclick="setBgColor('#4CAF50')" title="Green"></button>
+										<button class="color-btn"
+											style="background-color: #9C27B0;  margin: 5px; padding: 10px;"
+											onclick="setBgColor('#9C27B0')" title="Purple"></button>
+										<button class="color-btn"
+											style="background-color: #00BCD4;  margin: 5px; padding: 10px;"
+											onclick="setBgColor('#00BCD4')" title="Turquoise"></button>
+									</div>
+
+
+									<h3>Images background</h3>
+									<div class="image-btns">
+										<button class="image-btn custom-image-btn-icon"
+											onclick="document.getElementById('bgImagePicker').click()">
+											<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
+												viewBox="0 0 24 24">
+												<path d="M19 14h-4v5H9v-5H5l7-7 7 7zM5 18v2h14v-2H5z" />
+												<path d="M0 0h24v24H0z" fill="none" />
+											</svg>
+
+										</button>
+										<button class="image-btn" onclick="setBgImage('/static/assets/editor/bg/bg1.jpg')">
+											<img src="{% static 'assets/editor/bg/bg1.jpg' %}" alt="Background 1" width="60px" height="60px">
+										  </button>
+										  
+										  <button class="image-btn" onclick="setBgImage('/static/assets/editor/bg/bg2.jpg')">
+											<img src="{% static 'assets/editor/bg/bg2.jpg' %}" alt="Background 2" width="60px" height="60px">
+										  </button>
+										  
+										  <button class="image-btn" onclick="setBgImage('/static/assets/editor/bg/bg3.jpg')">
+											<img src="{% static 'assets/editor/bg/bg3.jpg' %}" alt="Background 3" width="60px" height="60px">
+										  </button>
+										  
+										  <button class="image-btn" onclick="setBgImage('/static/assets/editor/bg/bg4.jpg')">
+											<img src="{% static 'assets/editor/bg/bg4.jpg' %}" alt="Background 1" width="60px" height="60px">
+										  </button>
+										  
+										  <button class="image-btn" onclick="setBgImage('/static/assets/editor/bg/bg5.jpg')">
+											<img src="{% static 'assets/editor/bg/bg5.jpg' %}" alt="Background 2" width="60px" height="60px">
+										  </button>
+										  
+									</div>
+									<div class="custom-image-btn invisible">
+										<input type="file" id="bgImagePicker" accept="image/*"
+											onchange="setBgImage(URL.createObjectURL(this.files[0]))">
+										<button class="custom-image-btn-icon"
+											onclick="document.getElementById('bgImagePicker').click()">
+											<i class="fa fa-upload"></i>
+										</button>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<div class="toggle-div" id="text-div">
+
+						<div class="form-group">
+
+							<button id="addTextButton" class="btn btn-primary" title="Add new text block to canvas">
+								Add New Text
+							</button>
+						</div>
+
+						<div class="form-group">
+
+							<button id="deleteTextButton" class="btn btn-danger is-text-active"
+								title="Delete selected text block">
+								Delete Text
+							</button>
+						</div>
+
+						<div class="form-group d-flex align-items-center">
+							<label for="font-size" class="mr-3">Size</label>
+							<input type="range" min="6" max="100" value="12" id="font-size"
+								class="form-control-range is-text-active" aria-label="Font size slider">
+							<span id="font-size-value" class="badge badge-secondary ml-2">12</span>
+						</div>
+						<div class="form-group d-flex align-items-center">
+							<label for="letter-spacing" class="mr-3">Spacing</label>
+							<input type="range" min="-10" max="500" value="0" id="letter-spacing"
+								class="form-control-range is-text-active" aria-label="Letter spacing slider">
+							<span id="letter-spacing-value" class="badge badge-secondary ml-2">0</span>
+						</div>
+						<h4>Font Family</h4>
+						<div class="form-group">
+							<select id="font-select" class="form-control is-text-active"
+								aria-label="Font family dropdown">
+								<option value="Arial">Arial</option>
+
+							</select>
+						</div>
+
+						<div class="row align-items-center justify-content-center">
+							<div class="col-md-12">
+								<div class="form-group text-center p-3 m-3">
+									<button id="textLeft" class="btn btn-secondary is-text-active"
+										title="Align text to left">
+										<i class="fas fa-align-left"></i>
+									</button>
+									<button id="textCenter" class="btn btn-secondary is-text-active"
+										title="Align text to center">
+										<i class="fas fa-align-center"></i>
+									</button>
+									<button id="textRight" class="btn btn-secondary is-text-active"
+										title="Align text to right">
+										<i class="fas fa-align-right"></i>
+									</button>
+									<button id="textBold" class="btn btn-secondary btn-sm is-text-active"
+										title="Make text bold">
+										<i class="fas fa-bold"></i>
+									</button>
+									<button id="textItalic" class="btn btn-secondary btn-sm is-text-active"
+										title="Make text italic">
+										<i class="fas fa-italic"></i>
+									</button>
+									<button id="textUnderline" class="btn btn-secondary btn-sm is-text-active"
+										title="Underline text">
+										<i class="fas fa-underline"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="text-color" class="sr-only">Text color picker</label>
+							<input type="color" id="text-color" class="form-control form-control-sm is-text-active"
+								title="Choose text color">
+						</div>
+
+					</div>
+
+
+					<div class="toggle-div" id="shadow-div">
+						<h3>Shadow</h3>
+						<p>Shadow content goes here...</p>
+						<div class="form-group">
+							<label for="shadowToggle">Shadow:</label>
+							<button id="shadowToggle" class="btn btn-primary float-right">Activate</button>
+						</div>
+
+						<div class="form-group">
+							<label for="shadowOpacity">Shadow Opacity:</label>
+							<input id="shadowOpacity" type="range" min="0" max="1" step="0.01" value="0.2">
+							<div class="d-flex justify-content-between align-items-end">
+								<span>0</span>
+								<span>1</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="shadowOffsetX">Shadow X Offset:</label>
+							<input id="shadowOffsetX" type="range" min="-100" max="100" step="1" value="10">
+							<div class="d-flex justify-content-between align-items-end">
+								<span>-100</span>
+								<span>100</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="shadowOffsetY">Shadow Y Offset:</label>
+							<input id="shadowOffsetY" type="range" min="-100" max="100" step="1" value="10">
+							<div class="d-flex justify-content-between align-items-end">
+								<span>-100</span>
+								<span>100</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="shadowColor">Shadow Color:</label>
+							<input id="shadowColor" type="color" value="#000000">
+							<input type="hidden" id="hexValue">
+						</div>
+
+						<div class="form-group">
+							<label for="shadowBlur">Shadow Blur:</label>
+							<input id="shadowBlur" type="range" min="0" max="100" step="1" value="10">
+							<div class="d-flex justify-content-between align-items-end">
+								<span>0</span>
+								<span>100</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="toggle-div" id="effects-div">
+
+					</div>
+
+					<div class="toggle-div" id="download-div">
+						<h3>Download</h3>
+						<p>Download content goes here...</p>
+						<h2>Predefined sizes:</h2>
+						<div class="size-btns">
+
+							<button class="size-btn" onclick="setCanvasSize(800, 800)">
+
+								<p>800x800</p>
+							</button>
+							<button class="size-btn" onclick="setCanvasSize(600, 900)">
+								<p>600x900</p>
+							</button>
+							<button class="size-btn" onclick="setCanvasSize(800, 1200)">
+								<p>800x1200</p>
+							</button>
+							<button class="size-btn" onclick="setCanvasSize(1000, 1500)">
+								<p>1000x1500</p>
+							</button>
+						</div>
+						<h2>Recommended sizes:</h2>
+						<div class="size-btns">
+							<button class="size-btn" onclick="setCanvasSize(1280, 720)">
+								<p>YouTube</p>
+							</button>
+							<button class="size-btn" onclick="setCanvasSize(1080, 1080)">
+								<p>Instagram</p>
+							</button>
+							<button class="size-btn" onclick="setCanvasSize(820, 462)">
+								<p>Facebook</p>
+							</button>
+						</div>
+						<h2>Custom size:</h2>
+						<div class="custom-size">
+							<input type="text" id="widthInput" placeholder="Width"
+								style="border: 1px solid #ccc; padding: 5px;">
+							<input type="text" id="heightInput" placeholder="Height"
+								style="border: 1px solid #ccc; padding: 5px;">
+							<button id="customSizeBtn" disabled
+								onclick="setCanvasSize(document.getElementById('widthInput').value, document.getElementById('heightInput').value)"
+								style="margin-top: 10px; padding: 5px;">Set custom size</button>
+						</div>
+
+
+						<h5>Download Format</h5>
+						<div class="download">
+							<select id="formatSelect" style="width: 100%; padding: 5px; margin-bottom: 10px;">
+								<option value="png" selected>PNG</option>
+								<option value="svg">SVG</option>
+								<option value="jpeg">JPEG</option>
+							</select>
+						</div>
+						<br>
+						<a href="#" id="downloadLink" class="btn btn-primary"
+							onclick="downloadCanvas(this, 'canvas', document.getElementById('formatSelect').value)"
+							style="padding: 10px;">Download canvas</a>
+					</div>
+				</div>
+			</div>
+</body>
+
+
+<!-- <script type="text/javascript" src="{% static 'assets/editor/js/file.js'%} "></script> -->
+
+
+<script type="text/javascript" src="{% static 'assets/editor/js/newscript.js'%}"></script>
+<script type="text/javascript" src="{% static 'assets/editor/js/jquery.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'assets/editor/js/bootstrap.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'assets/editor/js/canvas-toBlob.js'%}"></script>
+<script type="text/javascript" src="{% static 'assets/editor/js/FileSaver.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'assets/editor/js/exif.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/utils.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/eventdispather.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/layer.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/rect.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/recttracker.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/layersview.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/scribblelayer.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/imagelayer.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/backgroundlayer.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/foregroundlayer.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/shadowlayer.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/masklayer.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/undostack.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/model.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/editor.js'%}"></script>
+<script type="application/javascript" src="{% static 'assets/editor/js/neweditor.js'%}"></script>
+
+<script type="application/javascript">
+	//$('.collapse').collapse();
+	/*
+			if ($(window).width() < 768) {
+				$("#wrapper").toggleClass("toggled");
+			}
+	*/
+	document.body.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+	window.addEventListener('orientationchange', function (e) { window.location.reload(); });
+	function GetIEVersion() {
+		var sAgent = window.navigator.userAgent;
+		var Idx = sAgent.indexOf("MSIE");
+
+		// If IE, return version number.
+		if (Idx > 0)
+			return parseInt(sAgent.substring(Idx + 5, sAgent.indexOf(".", Idx)));
+
+		// If IE 11 then look for Updated user agent string.
+		else if (!!navigator.userAgent.match(/Trident\/7\./))
+			return 11;
+
+		else
+			return 0; //It is not IE
+	}
+	function updateProgress(progress, caption) {
+		if (typeof caption !== 'undefined') {
+			$('#progressDlgTitle').text(caption);
+		}
+
+		if (progress == 0) {
+			$('#progressDialog').modal('show');
+		} else if (progress == 100) {
+			$('#progressDialog').modal('hide');
+		}
+	}
+
+	function showMessage(caption, text) {
+		updateProgress(100);
+
+		if (caption) {
+			$('#messageDlgTitle').text(caption);
+		}
+
+		if (caption) {
+			$('#messageDlgText').text(text);
+		}
+
+		$('#messageDlg').modal('show');
+	}
+
+	$(document).ready(function () {
+		if (GetIEVersion() > 0) {
+			showMessage("Error", "Sorry but Internet Explorer is not supported");
+			return;
+		}
+
+		updateProgress(0, "Loading...");
+
+		var model = new Model({ "id": 878664965, "secret": "b4U5TcxBF", "date": 1672763831694, "fileName": "62a97f0ab6d8256bab344f38" });
+		model.modelLoadedEvent.attach(function () {
+			updateProgress(100);
+
+			window.editor = new Editor(model,
+				document.getElementById("leftCanvas"),
+				document.getElementById("rightCanvas"));
+
+			window.addEventListener('resize', window.editor.fitToContainer, false);
+		});
+	});
+	/*
+	$("#wrapper").on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+		if($(window).width() >= 768)
+			window.editor.fitToContainer();
+	});
+	*/
+
+	document.addEventListener('touchstart', function (e) {
+		if (e.touches.length > 1)
+			e.preventDefault();
+	});
+
+	checkAndCleanStorage()
+
+		// console.log(nimageUrl);
+</script>
+
+<script>
+	// Hide preloader when content is loaded
+	window.onload = function () {
+		setTimeout(function () {
+			document.getElementById("preloader").style.display = "none";
+		}, 2000);
+	}
+
+	// Show preloader function
+	function showPreloader() {
+		const preloader = document.getElementById('preloader');
+		preloader.style.display = 'block';
+	}
+
+	// Hide preloader function
+	function hidePreloader() {
+		const preloader = document.getElementById('preloader');
+		preloader.style.display = 'none';
+	}
+
+</script>
+
+</html>

@@ -1,0 +1,128 @@
+<br><br><br><br><br><br><br><br><br><br>
+  <div class="container ">
+
+      <div class="col-lg-12 style=" height: 100vh; width: 100vh; object-fit: cover;">
+        <div class="row  mx-auto">
+          <div class="col-lg-6">
+            <div class="about-left-image  wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.5s">
+              <img   class="img-responsive" src="{{ orignal_image }}" target="_blank" alt="orignl Image">
+              <p>Not Satisfied  Try Advance Features </p>
+            </div>
+          </div>
+          <div class="col-lg-6">
+          <div class="align-self-center  wow fadeInRight " data-wow-duration="1s" data-wow-delay="0.5s" >
+            <div class="about-right-content mybg">
+                <img   class="img-responsive" src="{{ process_image }}" target="_blank" alt="orignl Image">
+            </div>
+          </div>
+        </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class="row p-2 float-right">
+        <div class="col-6 custom-row">
+          <button type="button" class="btn btn-outline-primary btn-rounded show-form" data-mdb-ripple-color="dark">Try Advance Feature</button>
+          <a class="btn btn-outline-success btn-rounded btn1" href="editor/{{img_url}}">Open in Editor</a>
+            </div>
+        <div class="row">
+
+          </div>
+          <div class="advance-form"> 
+            <div class="container">
+              <h2>Advance Options</h2>
+              <form id="advance-form" method="post" role="form">
+                <div class="messages">
+                  <input type="hidden" name="img_url" value="{{ orignal_image }}">
+
+                </div>
+                <div class="controls">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="model">Model</label>
+                                <select name="model" id="model" class="form-control">
+                                  <option value="u2net">General</option>
+                                  <option value="u2net_human_seg">Humans</option>
+                                  {% comment %} <option value="u2netp">human model 2</option> {% endcomment %}
+                                  <option value="u2net_cloth_seg">Cloths</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="ft">Foreground Threshold</label>
+                                <input type="range" class="form-range" id="ft" name = "ft" min="0" max="255" value="240">
+                              </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="fb">Background Threshold</label>
+                                <input type="range" class="form-range" id="ft" name = "fb" min="0" max="255" value="10">
+                              </div>
+                        </div>
+
+                    </div>
+                </div>
+        
+                <div class="row">
+                  <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="es">Erode Structure Size</label>
+                            <input type="range" class="form-range" id="ft" name = "es" min="0" max="255" value="10">
+                           
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="am">Alpha Matting</label>
+                            <br>
+                            <input type="radio" class="btn-check" name="am" id="success-outlined" value ="True" autocomplete="off" >
+                            <label class="btn btn-outline-success" for="success-outlined">Enable</label>
+
+                            <input type="radio" class="btn-check" name="am" id="danger-outlined" value="False" autocomplete="off" checked>
+                            <label class="btn btn-outline-danger" for="danger-outlined">Disable</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                          <label for="pp">Post Process</label>
+                          <br>
+                          <input type="radio" class="btn-check" name="pp" id="success-pp" value = "True" autocomplete="off" >
+                          <label class="btn btn-outline-success" for="success-pp">Enable</label>
+
+                          <input type="radio" class="btn-check" name="pp" id="danger-pp" value="False" autocomplete="off" checked>
+                          <label class="btn btn-outline-danger" for="danger-pp">Disable</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                      <br>
+                      <div class="row">
+                        
+                        <div class="col-6">
+                      <input type="submit" class="btn btn-info " value="Process">
+                    </div>
+                    <div class="col-6">
+                      <input type="button" class="btn btn-warning btn-cancel" value="Cancel">
+                    </div>
+                  </div>
+
+                  </div>
+                </div>
+                   
+                </div>
+              
+            </form>
+            </div>
+            </div>
+    
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+
+

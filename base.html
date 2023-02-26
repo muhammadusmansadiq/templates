@@ -1,0 +1,645 @@
+{% load static %}
+<!-- <link rel="stylesheet" href="{% static 'assets/css/fontawesome.css' %} "> -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Start your development with Creative Studio landing page.">
+    <meta name="author" content="Devcrud">
+    <title>Remove Background | Transparent Background</title>
+
+    <!-- font icons -->
+
+    <!-- Bootstrap + Creative Studio main styles -->
+
+    <link rel="stylesheet" href="{% static 'assets/vendors/themify-icons/css/themify-icons.css'%} ">
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %} ">
+
+    <link rel="stylesheet" href="{% static 'assets/css/style.css'%} ">
+    <!-- <link href="https://releases.transloadit.com/uppy/v3.3.1/uppy.min.css" rel="stylesheet" /> -->
+    <style>
+#dropzone {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed #ccc;
+  padding: 50px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #777;
+  transition: all 0.3s ease-in-out;
+  max-width: 800px; /* maximum width of the dropzone */
+  margin: 0 auto; /* center the dropzone horizontally */
+}
+
+#dropzone.dragover {
+  background-color: #eee;
+}
+
+#dropzone:hover {
+  border-color: #555;
+  color: #555;
+}
+
+#file-input {
+  display: none;
+}
+
+.custom-file-upload {
+  display: inline-block;
+  cursor: pointer;
+  padding: 15px;
+  background-color: #ff214f;
+  color: #fff;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.custom-file-upload:hover {
+  background-color: #ff2e63;
+}
+
+.custom-file-upload i {
+  font-size: 50px;
+}
+
+
+.custom-file-upload i {
+  font-size: 50px;
+}
+
+        .custom-file-upload {
+            display: inline-block;
+            border: 2px solid #ccc;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #777;
+            background-color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #555;
+            border-color: #555;
+            color: #fff;
+        }
+
+
+        #preview {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .img-wrapper {
+            position: relative;
+            height: 100px;
+            width: 100px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #eee;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .img-wrapper:hover {
+            border-color: #555;
+        }
+
+        .preview {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .delete-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            opacity: 0.8;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .delete-icon:hover {
+            opacity: 1;
+        }
+
+        .error-msg {
+            margin-top: 10px;
+            font-size: 16px;
+            color: red;
+            font-weight: bold;
+        }
+
+        .result-row {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .result-preview {
+            height: 100px;
+            margin-right: 20px;
+            position: relative;
+            cursor: pointer;
+            /* Add cursor pointer to indicate that the image is clickable */
+        }
+
+        .result-preview:hover::after {
+            content: "Edit";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        /* Style for the processing button */
+        #progress-bar {
+            height: 5px;
+            background-color: #ddd;
+            margin-top: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Processing dialog style */
+        .processing-dialog {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .processing-dialog .spinner {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #4CAF50;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .custom-file-upload {
+            display: inline-block;
+            background-color: #ccc;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #555;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
+    {% if messages %}
+
+    {{messages}
+    <script>
+
+        alert('{{messages}}')
+    </script>
+
+    {% endif %}
+    <!-- Page Navigation -->
+    <nav class="navbar custom-navbar navbar-expand-lg navbar-dark" data-spy="affix" data-offset-top="20">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'assets/imgs/logo.png' %}" alt="My image">
+
+
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#service">Service</a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                   
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- End Of Page Navigation -->
+
+
+    <!-- Page Header -->
+    <header class="header">
+        <div class="overlay">
+            <h6 class="subtitle">The Best Tool In</h6>
+            <h1 class="title">Background Removel</h1>
+            <div id="dropzone">
+                <label for="file-input" class="custom-file-upload">
+                  <i class="ti-upload" style="color: #ff214f;"></i>
+                  <span>Upload Files</span>
+                </label>
+                <input type="file" id="file-input" multiple>
+                <div id="preview"></div>
+                <div id="error"></div>
+                <div id="progress-bar"></div>
+                <div id="result"></div>
+
+              </div>
+              
+              
+
+        </div>
+    </header>
+    <!-- End Of Page Header -->
+
+    <!-- Box -->
+    <div class="box text-center">
+        <div class="box-item">
+            <i class="ti-vector"></i>
+            <h6 class="box-title">For work and personal use</h6>
+            <p>Upload your own photos or the images you’re using for work. Simply upload the image and wait a few
+                seconds; then, download your image with a transparent background.</p>
+        </div>
+        <div class="box-item">
+            <i class="ti-timer"></i>
+            <h6 class="box-title">Save time and money</h6>
+            <p>Save on images with clear backgrounds. No need to use green screens, organize special photoshoots, or
+                hire designers to make an image transparent. Remove backgrounds for free by yourself, at any time!</p>
+        </div>
+        <div class="box-item">
+            <i class="ti-mobile"></i>
+            <h6 class="box-title">It’s 100% automatic</h6>
+            <p>Our AI technology quickly processes data from your uploaded image and selects the background to remove
+                automatically. You can download the final image in PNG format with a transparent background.</p>
+        </div>
+    </div>
+    <!-- End of Box -->
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-5 col-lg-4">
+                    <img src="{% static 'assets/imgs/about.jpg' %}" alt="about image" class="w-100 img-thumbnail mb-3">
+                </div>
+                <div class="col-md-7 col-lg-8">
+                    <h6 class="section-subtitle mb-0">We Create a new way to</h6>
+                    <h6 class="section-title mb-3">Remove Background</h6>
+                    <p>Adopted with the advanced AI (artificial intelligence) technology, Our Background Remover can
+                        erase the image background automatically. It can detect the subjects from any person's
+                        photography and get rid of the background to create a precise cutout.</p>
+                    <p> Without extra clicks, you can remove background from JPG/JPEG and PNG photos and make a
+                        transparent photo in a few seconds. No company of Photoshop, you can remove the complex
+                        background from your portrait effortlessly. </p>
+                    <p>Our tool is Reliable, efficient & scaleable, optimized for different purposes and use-case. One
+                        Click Operation Fast and freeSave your time, energy and money.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End of About Section -->
+
+    <!-- About Section with bg -->
+    <section class="has-bg-img py-md">
+        <div class="container text-center">
+            <h6 class="section-subtitle">Let's See</h6>
+            <h6 class="section-title mb-6">What Make our Tool Simple.</h6>
+            <div class="widget mb-4">
+                <div class="widget-item">
+                    <i class="ti-upload"></i>
+                    <h4>Upload</h4>
+                </div>
+                <div class="widget-item">
+                    <i class="ti-more"></i>
+                    <h4>Process</h4>
+                </div>
+                <div class="widget-item">
+                    <i class="ti-settings"></i>
+                    <h4>Edit</h4>
+                </div>
+                <div class="widget-item">
+                    <i class="ti-download"></i>
+                    <h4>Download</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Of About Sectoin -->
+
+    <!-- Service Section -->
+    <section id="service">
+        <div class="container">
+            <h6 class="section-subtitle text-center">Makes Happen</h6>
+            <h5 class="section-title text-center mb-6">Ramp up the creativity</h5>
+            <div class="row">
+                <div class="col-sm-4 col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="mb-4"><i class="ti-user text-primary"></i></h2>
+                            <h6 class="card-title">Individuals</h6>
+                            <p>Add new backgrounds for profile pictures & other splendid effects!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="mb-4"><i class="ti-camera text-primary"></i></h2>
+                            <h6 class="card-title">Photographers</h6>
+                            <p>Instead of losing hours with repetitive work, removing backgrounds is now as quick as
+                                clicking a button.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="mb-4"><i class="ti-announcement text-primary"></i></h2>
+                            <h6 class="card-title">Marketing</h6>
+                            <p>Whether you are working with product images or professional portraits, Our tool
+                                effortlessly handles challeng, making ads photo editing super easy.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="mb-4"><i class="ti-video-clapper text-primary"></i></h2>
+                            <h6 class="card-title">Devolpers</h6>
+                            <p>Getting rid of backgrounds so easily means you can i generate high-quality content for
+                                social media and SEO total automatically</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="mb-4"><i class="ti-shopping-cart-full text-primary"></i></h2>
+                            <h6 class="card-title">Ecommerce</h6>
+                            <p>If you want to achieve Amazon or Ebay-ready photos with white background, Our tool is the
+                                simplest way to go about doing that.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="mb-4"><i class="ti-layout-media-overlay-alt text-primary"></i></h2>
+                            <h6 class="card-title">Media</h6>
+                            <p>Whether you are working with headshots, creating newspaper headline images or
+                                illustrating product pages, out tools cuts out the hassle.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="mb-4"><i class="ti-car text-primary"></i></h2>
+                            <h6 class="card-title">Car Dealerships</h6>
+                            <p>No matter what system you work with, our API means you can integrate out tool automated
+                                background removal process directly into your workflow.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="mb-4"><i class="ti-bar-chart-alt text-primary"></i></h2>
+                            <h6 class="card-title">Enterprise</h6>
+                            <p>Enterprise solutions at scale, earn more time for innovation by significantly reducing
+                                editing time. Get outstanding results automatically in seconds.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- End of Service Section -->
+
+
+
+
+    <!-- Video Section
+    <section class="has-bg-img py-lg" id="try-now">
+        <h6 class="section-subtitle text-center">Give it a Try</h6>
+        <h5 class="section-title text-center mb-6">Select your Image and see the magic</h5>
+        <div id="drop-area" class="center">
+            <p>Upload files with the file dialog or by dragging and dropping images onto the dashed region
+            </p>
+
+            {% csrf_token %}
+
+            <input type="file" id="filefield" name="image" accept="image/*">
+            <label for="filefield" class="center" id="label-image">
+                <button type="button" class="btn btn-outline-primary play-control file-select-btn" data-toggle="modal"
+                    id="fileChange">
+                    <i class="ti-upload"></i>
+                </button></label>
+            <div id="gallery">
+            </div>
+        </div>
+
+    </section>
+    <!-- End of Video Section -->
+    -->
+
+
+
+
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="contact-card">
+                <div class="infos">
+                    <h6 class="section-subtitle">Get Here</h6>
+                    <h6 class="section-title mb-4">Contact Us</h6>
+
+                    <div class="item">
+                        <i class="ti-location-pin"></i>
+                        <div class="">
+                            <h5>Location</h5>
+                            <p> 12345 Fake ST NoWhere AB Country</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <i class="ti-mobile"></i>
+                        <div>
+                            <h5>Phone Number</h5>
+                            <p>(123) 456-7890</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <i class="ti-email"></i>
+                        <div class="mb-0">
+                            <h5>Email Address</h5>
+                            <p>info@website.com</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <i class="ti-world"></i>
+                        <div class="mb-0">
+                            <h5>example.com</h5>
+                            <p>info@example.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form">
+                    <h6 class="section-subtitle">Available 24/7</h6>
+                    <h6 class="section-title mb-4">Get In Touch</h6>
+                    <form>
+                        <div class="form-group">
+                            <input type="email" class="form-control form-control-lg" id="exampleInputEmail1"
+                                aria-describedby="emailHelp" placeholder="Enter email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-lg" id="exampleInputPassword1"
+                                placeholder="Subject" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="contact-message" id="" cols="30" rows="7"
+                                class="form-control form-control-lg" placeholder="Message"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg mt-3">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Contact Section -->
+
+    <section class="has-bg-img py-0">
+        <div class="container">
+            <div class="footer">
+                <div class="footer-lists">
+                    <ul class="list">
+                        <li class="list-head">
+                            <h6 class="font-weight-bold">ABOUT US</h6>
+                        </li>
+                        <li class="list-body">
+                            <a href="#" class="logo">
+                                <img src="{% static 'assets/imgs/logo.png' %}" alt="logo">
+                                <h6>Remove Background</h6>
+                            </a>
+                            <p>Replace background from images in one click with AI powered tool. Remove background
+                                online from the original image: personal or product photo, digital ads, logo, or icon
+                            </p>
+                            <p class="mt-3">
+                                Copyright
+                                <script>document.write(new Date().getFullYear())</script> &copy; <a
+                                    class="d-inline text-primary" href="#">RemoveBAckground</a>
+                            </p>
+                        </li>
+                    </ul>
+                    <ul class="list">
+                        <li class="list-head">
+                            <h6 class="font-weight-bold">USEFUL LINKS</h6>
+                        </li>
+                        <li class="list-body">
+                            <div class="row">
+                                <div class="col">
+                                    <a href="#home">Home</a>
+                                    <a href="#about">About</a>
+                                    <a href="#service">Service</a>
+                                    <a href="#">Privacy Policy</a>
+
+                                </div>
+
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list">
+                        <li class="list-head">
+                            <h6 class="font-weight-bold">CONTACT INFO</h6>
+                        </li>
+                        <li class="list-body">
+                            <p>Contact us and we'll get back to you within 24 hours.</p>
+                            <p><i class="ti-location-pin"></i> 12345 Fake ST NoWhere AB Country</p>
+                            <p><i class="ti-email"></i> info@website.com</p>
+                            <div class="social-links">
+                                <a href="javascript:void(0)" class="link"><i class="ti-facebook"></i></a>
+                                <a href="javascript:void(0)" class="link"><i class="ti-twitter-alt"></i></a>
+                                <a href="javascript:void(0)" class="link"><i class="ti-google"></i></a>
+                                <a href="javascript:void(0)" class="link"><i class="ti-pinterest-alt"></i></a>
+                                <a href="javascript:void(0)" class="link"><i class="ti-instagram"></i></a>
+                                <a href="javascript:void(0)" class="link"><i class="ti-rss"></i></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- <script type="text/javascript" src="{% static "js/my_external_script.js" %}"></script> -->
+
+
+    <script type="text/javascript" src="{% static 'assets/vendors/jquery/jquery-3.4.1.js'%} "></script>
+    <script type="text/javascript" src="{% static 'assets/vendors/bootstrap/bootstrap.bundle.js'%} "></script>
+    <script type="text/javascript" src="{% static 'assets/vendors/bootstrap/bootstrap.affix.js'%} "></script>
+    <script type="text/javascript" src="{% static 'assets/js/scripts.js'%} "></script>
+    <!-- <script type="text/javascript" src="{% static 'assets/js/script.js'%} "></script> -->
+    <script type="text/javascript" src="{% static 'assets/js/file.js'%} "></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Title of the document</title>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+  
+  <h2>output here </h2>
+  <hr>
+  <div id="txt"></div>
+
+  <div id="log"></div>
+  <hr>
+  <h2>Select file </h2>
+  <input type="file" multiple onchange="encodeImageFileAsURL(this)" />
+  <script>
+    i = 0
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+   }
+
+
+    async  function encodeImageFileAsURL(element) {
+
+      var totalfiles = element.files.length;
+      console.log("total files are " + totalfiles)
+      for (var index = 0; index < totalfiles; index++) {
+        await sleep(1000);
+       
+        <!-- console.log("file sent"+index) -->
+        let file = element.files[index];
+        let reader = new FileReader();
+
+        reader.onloadend = function () {
+          
+          image = reader.result;
+       
+          $.ajax({
+            type: "POST",
+            url: 'http://127.0.0.1:8000/api',
+            crossDomain: true,
+
+            data: {
+
+              image: image
+
+
+
+
+            },
+            success: function (response) {
+            //   url =" https://bg2.depin.info/"+response.output_img
+            
+              
+              
+            //   console.log(++i +") "+url)
+            //   document.getElementById('txt').innerHTML += url + '<br>' 
+
+            //  // document.getElementById('log').innerHTML += '<img  height="300px" src="https://bg2.depin.info/uploads/results/' + response.output_img + '.png" alt="image">'
+            //   document.getElementById('log').innerHTML += '<a href="'+ url +'">'+'<img  height="300px" src="https://bg2.depin.info/uploads/results/' + response.output_img + '.png" alt="image">'+'</a><br>' 
+           
+              //window.location.href = "http://127.0.0.1:8000/editor/"+response.data.file_id -->
+
+            }
+          });
+        }
+
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+
+
+</body>
+
+</html>
+<!-- <img src="<a href="https://bg2.depin.info/uploads/results/'+ response.output_img+'.png" alt=""> -->
+
+<!-- Object { output_img: "428d5e76-e1ec-4cfc-ad0e-bd16cac96b04", input_img: "428d5e76-e1ec-4cfc-ad0e-bd16cac96b04.jpeg" } -->

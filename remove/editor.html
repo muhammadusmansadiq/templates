@@ -1,0 +1,144 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en-US" class="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Remove Background</title>
+    <link rel="stylesheet" href="https://removal.ai/wp-content/themes/remove/fontawesome5pro/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'editor/css/main.css'%} ">
+    <link rel="stylesheet" href="{% static 'editor/css/rmr.css'%} ">
+    <link rel="stylesheet" href="{% static 'editor/css/rme.css'%} ">
+
+</head>
+<body>
+    <div id="rmrApp">
+        <div class="rmr-modal-frame state-appear rmr-modal-full" style="display: none;">
+            <div class="rmr-modal">
+                <div class="rmr-modal-inset">
+                    <div class="rmr-modal-body">
+                        <div class="top-menu">
+                            <!-- <div class="logo-area"><img data-src="https://removal.ai/wp-content/uploads/rme/fasion.png"
+                                    class="lazyload"
+                                    src="images/data:image-gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><noscript><img
+                                        src="images/rme-fasion.png"></noscript>
+                            </div> -->
+                            <div class="menu">
+                                <div class="rmr-tooltip">
+                                    <button data-tool="pan" class="rmr-menu-item btn-pan">
+                                        <span class="far fa-arrows-alt"></span>Move</button>
+                                    <span class="rmr-tooltip-text">Press and hold the space key to use the move
+                                        function</span>
+                                </div>
+                                <button data-tool="mask" class="rmr-menu-item btn-mask active">
+                                    <span class="far fa-dot-circle"></span>Restore</button>
+                                <button data-tool="erase" class="rmr-menu-item btn-erase">
+                                    <span class="far fa-eraser"></span>Eraser</button>
+                                <input type="hidden" value="mask" id="eraser-tool">
+                            </div>
+                            <div class="brush-slider">
+                                <div class="rmr-range-slider">
+                                    <div class="rmr-range-slider__title"><span>Brush size</span><span
+                                            class="rmr-control-value">20</span></div>
+                                    <input id="brush-size" class="rmr-range-slider__range" type="range" min="1"
+                                        max="100" step="1" value="20">
+                                </div>
+                            </div>
+                            <div class="export-control">
+                                <button id="export-low-quality" class="rmr-form-control rmr-button">
+                                    <i class="far fa-download"></i>Save image</button>
+                            </div>
+                            <div class="close-menu">
+                                <div class="close-menu--item"><i class="fad fa-times-circle"></i></div>
+                            </div>
+                        </div>
+                        <div class="canvas-area-remove">
+                            <div id="canvasContainer">
+                                <div id="leftside">
+                                    <canvas id="left-canvas"></canvas>
+                                </div>
+                                <div id="rightside">
+                                    <canvas id="right-canvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bottom-menu">
+                            <div class="zoom-menu">
+                                <button id="btn-undo" disabled data-tool="undo" class="rmr-menu-item btn-undo"><i
+                                        class="far fa-undo"></i></button>
+                                <button id="btn-redo" disabled data-tool="redo" class="rmr-menu-item btn-redo"><i
+                                        class="far fa-redo"></i></button>
+                                <div class="clear-rmr-menu-item"></div>
+                                <button id="btn-zoomout" disabled data-tool="zoomout"
+                                    class="rmr-menu-item btn-zoomout"><i class="far fa-search-minus"></i></button>
+                                <button id="btn-zoomin" data-tool="zoomin" class="rmr-menu-item btn-zoomin"><i
+                                        class="far fa-search-plus"></i></button>
+                                <select id="zoom-select" classname="rmr-form-control bg-dark">
+                                    <option value="1">100%</option>
+                                    <option value="1.5">150%</option>
+                                    <option value="2">200%</option>
+                                    <option value="3">300%</option>
+                                    <option value="4">400%</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="rmeApp">
+    </div>
+    <div class="rm-upload-process-bottom" id="rm-upload-result">
+        <div class="rm-upload-process-bottom-inner">
+            <div class="rm-result-item has-init">
+                <!-- <div class="rm-upload-result-control">
+                    <ul class="nav nav-tabs">
+                        <li class="">
+                            <a href="{{orignal_image}}"
+                                data-toggle="rm-tab">
+                                Original</a>
+                        </li>
+                        <li class="active">
+                            <a href="{{result_image}}"
+                                data-toggle="rm-tab">
+                                Removed Background</a>
+                        </li>
+                    </ul>
+                </div> -->
+                <div class="rm-upload-result" style="width: 514px; height: 514px;">
+                    <div class="rme-button" style="display: block;">
+                        <span class="x-split-button">
+                            <button class="rmr-image rmr-preview x-button x-button-drop "
+                                data-img="{{orignal_image}}"
+                                data-res="{{mask_image}}">
+                                <i class="fas fa-eraser"></i>  Erase &amp; Restore</button>
+                        </span>
+                        <span class="x-split-button">
+                            <button class="rme-image rme-preview x-button x-button-drop" id="editor-img"
+                                data-image="data:image/png;base64,{{result_image}}">
+                                <i class="fas fa-magic"></i>  Editor tool</button>
+                        </span>
+                        <span class="x-split-button">
+                            <button class="rme-image rme-preview x-button x-button-drop"
+                                data-image="data:image/png;base64,{{result_image}}">
+                                <i class="fas fa-downloiad"></i>  Download</button>
+                        </span>
+                    </div>
+                    <div class="rm-bg-result"><img id="r"
+                            src="data:image/png;base64,{{result_image}}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script type="text/javascript" src="{% static 'editor/js/rme.js'%} "></script>
+
+    <script type="text/javascript" src="{% static 'editor/js/rmr.js'%} "></script>
+<!-- 
+    <script src="jsDelivr-main/rme.js"></script>
+    <script src="jsDelivr-main/rmr.js"></script> -->
+</body>
+</html>
